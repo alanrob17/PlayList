@@ -1,9 +1,9 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Rename.cs" company="Software Inc.">
+// <copyright file="PlayList.cs" company="Software Inc.">
 //   A.Robson
 // </copyright>
 // <summary>
-//   Rename music and training files to a consistant format.
+//   Create a playlist of video training materials.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 namespace PlayList
