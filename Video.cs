@@ -14,6 +14,9 @@ namespace PlayList
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
+    using System.Text.RegularExpressions;
+    using System.Text;
+    using System.IO;
 
     internal class Video
     {
