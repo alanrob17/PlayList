@@ -22,7 +22,7 @@ namespace PlayList
         /// <param name="subFolder">The sub folder.</param>
         /// <param name="changeFileName">Change file name.</param>
         /// <param name="removeBrackets">Remove brackets and content from music files.</param>
-        public ArgList(bool subFolder, bool changeFileName, bool removeBrackets)
+        public ArgList(bool subFolder)
         {
             this.SubFolder = subFolder;
         }
