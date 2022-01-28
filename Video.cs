@@ -1,4 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
+﻿// ------------------------------------ -------------------------------------------------------------------------------
 // <copyright file="PlayList.cs" company="Software Inc.">
 //   A.Robson
 // </copyright>
@@ -26,7 +26,42 @@ namespace PlayList
 
             var fileDirectory = Environment.CurrentDirectory + @"\";
 
+            // get a list of sub directories in this directory. These will be the only directories we will work with.
+            var dirs = Directory.GetDirectories(fileDirectory, "*", SearchOption.TopDirectoryOnly);
 
+            var directories = GetDirectories(dirs);
+
+            foreach (var dir in directories)
+            {
+                Console.WriteLine(dir);
+            }
+
+            Console.ReadLine();
+
+        }
+
+        /// <summary>
+        /// Get a list of directories that start with a numeric charecter.
+        /// </summary>
+        /// <param name="dirs">The complete directory list.</param>
+        /// <returns>The <see cref="string"/>the ammended list of directories.</returns>
+        private static IEnumerable<string> GetDirectories(string[] dirs)
+        {
+            var newDirs = new List<string>();
+            var dirPattern = "^[0-9].*";
+
+            foreach (string dir in dirs)
+            {
+                var iposn = dir.LastIndexOf("\\");
+                var directory = dir.Substring(iposn + 1);
+
+                if (Regex.IsMatch(directory, dirPattern))
+                {
+                    newDirs.Add(dir);
+                }
+            }
+
+            return newDirs;
         }
 
         /// <summary>
