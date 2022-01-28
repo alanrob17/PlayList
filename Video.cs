@@ -15,7 +15,6 @@ namespace PlayList
     using System.Text;
     using System.Threading.Tasks;
     using System.Text.RegularExpressions;
-    using System.Text;
     using System.IO;
 
     internal class Video
@@ -41,9 +40,6 @@ namespace PlayList
                     CreatePlayList(files);
                 }
             }
-
-            Console.ReadLine();
-
         }
 
         /// <summary>
@@ -55,18 +51,110 @@ namespace PlayList
             var playListFolder = Path.GetDirectoryName(files.FirstOrDefault());
             var id = -1;
             var items = new List<Item>();
-            var item = new Item();
 
             foreach (var file in files)
             {
-                item.ItemId = id++;
+                var item = new Item();
+
+                item.ItemId = ++id;
                 item.Name = Path.GetFileName(file);
                 var time = GetVideoDuration(file);
                 item.Duration = time.TotalMilliseconds;
                 items.Add(item);
             }
 
+            BuildPlayList(items, playListFolder);
+        }
 
+        /// <summary>
+        /// Build the playlist file.
+        /// </summary>
+        /// <param name="IEnnumerable">The List of video files.</param>
+        /// <param name="playListFolder">The current folder.</param>
+        private static void BuildPlayList(IEnumerable<Item> items, string playListFolder)
+        {
+            var playList = new StringBuilder();
+
+            BuildHeader(playList);
+
+            BuildPlayListItems(playList, items);
+
+            BuildFooter(playList, items.Count());
+
+            string[] delim = { Environment.NewLine, "\n" }; // "\n" added in case you manually appended a newline
+            string[] lines = playList.ToString().Split(delim, StringSplitOptions.None);
+
+            var outFile = playListFolder + "\\_video.xspf";
+            var outStream = File.Create(outFile);
+            var sw = new StreamWriter(outStream);
+
+            foreach (var item in lines)
+            {
+                sw.WriteLine(item);
+            }
+
+            // flush and close
+            sw.Flush();
+            sw.Close();
+        }
+
+        /// <summary>
+        /// Add items to the playlist.
+        /// </summary>
+        /// <param name="StringBuilder">The playlist items.</param>
+        /// <param name="Count">The item count.</param>
+        /// <returns>The <see cref="StringBuilder"/>partial playlist.</returns>
+        private static StringBuilder BuildFooter(StringBuilder playList, int count)
+        {
+            playList.Append("\t</trackList>\n");
+            playList.Append("\t<extension application=\"http://www.videolan.org/vlc/playlist/0\">\n");
+
+            for (int i = 0; i < count; i++)
+            {
+                playList.Append("\t\t<vlc:item tid=\"" + i + "\"/>\n");
+            }
+
+            playList.Append("\t</extension>\n");
+            playList.Append("</playlist>\n");
+
+            return playList;
+        }
+
+        /// <summary>
+        /// Add items to the playlist.
+        /// </summary>
+        /// <param name="StringBuilder">The playlist.</param>
+        /// <param name="Item">The playlist items.</param>
+        /// <returns>The <see cref="StringBuilder"/>partial playlist.</returns>
+        private static StringBuilder BuildPlayListItems(StringBuilder playList, IEnumerable<Item> items)
+        {
+            foreach (var item in items)
+            {
+                playList.Append("\t\t<track>\n");
+                playList.Append("\t\t<location>" + "file:///" + item.Name + "</location>\"\n");
+                playList.Append("\t\t<duration>" + item.Duration + "</duration>\"\n");
+                playList.Append("\t\t<extension application=\"http://www.videolan.org/vlc/playlist/0\">\n");
+                playList.Append("\t\t\t<vlc:id>" + item.ItemId + "</vlc:id>\"\n");
+                playList.Append("\t\t</extension>\n");
+                playList.Append("\t\t</track>\n");
+            }
+
+            return playList;
+        }
+
+        /// <summary>
+        /// Build the playlist header.
+        /// </summary>
+        /// <param name="IEnumerable">The List of video files.</param>
+        /// <returns>The <see cref="IEnumerable"/>partial playlist.</returns>
+        private static StringBuilder BuildHeader(StringBuilder playList)
+        {
+            playList.Append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+            playList.Append("<playlist xmlns=\"http://xspf.org/ns/0/\" xmlns:vlc=\"http://www.videolan.org/vlc/playlist/ns/0/\" version=\"1\">\n");
+            playList.Append("\t<title>Playlist</title>\n");
+            playList.Append("\t<trackList>\n");
+
+            return playList;
         }
 
         /// <summary>
