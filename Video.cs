@@ -26,14 +26,20 @@ namespace PlayList
 
             var fileDirectory = Environment.CurrentDirectory + @"\";
 
-            // get a list of sub directories in this directory. These will be the only directories we will work with.
             var dirs = Directory.GetDirectories(fileDirectory, "*", SearchOption.TopDirectoryOnly);
 
             var directories = GetDirectories(dirs);
 
             foreach (var dir in directories)
             {
-                Console.WriteLine(dir);
+                // we have to create a video list for each directory
+                IEnumerable<string> files = GetFileList(dir);
+
+                // Create the playlist here
+                if (files.Count() > 0)
+                {
+                    CreatePlayList(files);
+                }
             }
 
             Console.ReadLine();
@@ -41,10 +47,10 @@ namespace PlayList
         }
 
         /// <summary>
-        /// Get a list of directories that start with a numeric charecter.
+        /// Get a list of directories that start with a numeric character.
         /// </summary>
         /// <param name="dirs">The complete directory list.</param>
-        /// <returns>The <see cref="string"/>the ammended list of directories.</returns>
+        /// <returns>The <see cref="IEnumerable"/>ammended list of directories.</returns>
         private static IEnumerable<string> GetDirectories(string[] dirs)
         {
             var newDirs = new List<string>();
@@ -62,6 +68,30 @@ namespace PlayList
             }
 
             return newDirs;
+        }
+
+        /// <summary>
+        /// Get a list of all files in a folder structure.
+        /// </summary>
+        /// <param name="folder">The folder name.</param>
+        /// <returns>A list of video files.</returns>
+        private static IEnumerable<string> GetFileList(string folder)
+        {
+            var fileList = GetFiles(folder);
+
+            return fileList;
+        }
+
+        /// <summary>
+        /// Get list of files.
+        /// </summary>
+        /// <param name="fileList">The image List.</param>
+        private static IEnumerable<string> GetFiles(string folder)
+        {
+            var fileList = Directory.EnumerateFiles(folder, "*.*", SearchOption.AllDirectories)
+                                .Where(s => s.EndsWith(".mp4") || s.EndsWith(".mkv"));
+
+            return fileList;
         }
 
         /// <summary>
