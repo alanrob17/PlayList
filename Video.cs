@@ -47,6 +47,29 @@ namespace PlayList
         }
 
         /// <summary>
+        /// Create a playlist from the video files found.
+        /// </summary>
+        /// <param name="IEnumerable">The list of video files.</param>
+        private static void CreatePlayList(IEnumerable<string> files)
+        {
+            var playListFolder = Path.GetDirectoryName(files.FirstOrDefault());
+            var id = -1;
+            var items = new List<Item>();
+            var item = new Item();
+
+            foreach (var file in files)
+            {
+                item.ItemId = id++;
+                item.Name = Path.GetFileName(file);
+                var time = GetVideoDuration(file);
+                item.Duration = time.TotalMilliseconds;
+                items.Add(item);
+            }
+
+
+        }
+
+        /// <summary>
         /// Get a list of directories that start with a numeric character.
         /// </summary>
         /// <param name="dirs">The complete directory list.</param>
@@ -89,9 +112,19 @@ namespace PlayList
         private static IEnumerable<string> GetFiles(string folder)
         {
             var fileList = Directory.EnumerateFiles(folder, "*.*", SearchOption.AllDirectories)
-                                .Where(s => s.EndsWith(".mp4") || s.EndsWith(".mkv"));
+                                    .Where(s => s.EndsWith(".mp4") || s.EndsWith(".mkv"));
 
             return fileList;
+        }
+
+        private static TimeSpan GetVideoDuration(string filePath)
+        {
+            using (var shell = ShellObject.FromParsingName(filePath))
+            {
+                Microsoft.WindowsAPICodePack.Shell.PropertySystem.IShellProperty prop = shell.Properties.System.Media.Duration;
+                var t = (ulong)prop.ValueAsObject;
+                return TimeSpan.FromTicks((long)t);
+            }
         }
 
         /// <summary>
