@@ -141,11 +141,8 @@ namespace PlayList
             foreach (var item in items)
             {
                 playList.Append("\t\t<track>\n");
-                if (item.Name.Contains("#"))
-                {
-                    item.Name = item.Name.Replace("#", "%23");
-                }
-                playList.Append("\t\t<location>" + "file:///" + item.Name + "</location>\"\n");
+                var name = ChangeToAscii(item.Name);
+                playList.Append("\t\t<location>" + "file:///" + name + "</location>\"\n");
                 playList.Append("\t\t<duration>" + item.Duration + "</duration>\"\n");
                 playList.Append("\t\t<extension application=\"http://www.videolan.org/vlc/playlist/0\">\n");
                 playList.Append("\t\t\t<vlc:id>" + item.ItemId + "</vlc:id>\"\n");
@@ -154,6 +151,25 @@ namespace PlayList
             }
 
             return playList;
+        }
+
+        /// <summary>
+        /// Replace certain characters with ascii codes.
+        /// </summary>
+        /// <param name="string">item.Name.</param>
+        /// <returns>The <see cref="string"/>corrected name.</returns>
+        private static string ChangeToAscii(string name)
+        {
+            if (name.Contains("#"))
+            {
+                name = name.Replace("#", "%23");
+            }
+            else if (name.Contains("&"))
+            {
+                name = name.Replace("&", "%26");
+            }
+
+            return name;
         }
 
         /// <summary>
