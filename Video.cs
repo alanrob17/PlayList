@@ -25,9 +25,19 @@ namespace PlayList
 
             var fileDirectory = Environment.CurrentDirectory + @"\";
 
-            var dirs = Directory.GetDirectories(fileDirectory, "*", SearchOption.TopDirectoryOnly);
+            IEnumerable<string> directories = new List<string>();
 
-            var directories = GetDirectories(dirs);
+            if (argList.SubFolder)
+            {
+                var dirs = Directory.GetDirectories(fileDirectory, "*", SearchOption.TopDirectoryOnly);
+
+                directories = GetDirectories(dirs);
+            }
+            else
+            {
+                // This isn't working - I need to add the current directory.
+                directories = new string[] { fileDirectory };
+            }
 
             foreach (var dir in directories)
             {
