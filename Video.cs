@@ -74,7 +74,7 @@ namespace PlayList
         /// <summary>
         /// Create a playlist from the video files found.
         /// </summary>
-        /// <param name="IEnumerable">The list of video files.</param>
+        /// <param name="files">The list of video files.</param>
         private static void CreatePlayList(IEnumerable<string> files)
         {
             var playListFolder = Path.GetDirectoryName(files.FirstOrDefault());
@@ -98,7 +98,7 @@ namespace PlayList
         /// <summary>
         /// Build the playlist file.
         /// </summary>
-        /// <param name="IEnnumerable">The List of video files.</param>
+        /// <param name="items">The List of video files.</param>
         /// <param name="playListFolder">The current folder.</param>
         private static void BuildPlayList(IEnumerable<Item> items, string playListFolder)
         {
@@ -130,8 +130,8 @@ namespace PlayList
         /// <summary>
         /// Add items to the playlist.
         /// </summary>
-        /// <param name="StringBuilder">The playlist items.</param>
-        /// <param name="Count">The item count.</param>
+        /// <param name="playList">The playlist items.</param>
+        /// <param name="count">The item count.</param>
         /// <returns>The <see cref="StringBuilder"/>partial playlist.</returns>
         private static StringBuilder BuildFooter(StringBuilder playList, int count)
         {
@@ -152,8 +152,8 @@ namespace PlayList
         /// <summary>
         /// Add items to the playlist.
         /// </summary>
-        /// <param name="StringBuilder">The playlist.</param>
-        /// <param name="Item">The playlist items.</param>
+        /// <param name="playList">The playlist.</param>
+        /// <param name="items">The playlist items.</param>
         /// <returns>The <see cref="StringBuilder"/>partial playlist.</returns>
         private static StringBuilder BuildPlayListItems(StringBuilder playList, IEnumerable<Item> items)
         {
@@ -175,7 +175,7 @@ namespace PlayList
         /// <summary>
         /// Build the playlist header.
         /// </summary>
-        /// <param name="IEnumerable">The List of video files.</param>
+        /// <param name="playList">The List of video files.</param>
         /// <returns>The <see cref="IEnumerable"/>partial playlist.</returns>
         private static StringBuilder BuildHeader(StringBuilder playList)
         {
@@ -215,7 +215,7 @@ namespace PlayList
         /// Get a list of all files in a folder structure.
         /// </summary>
         /// <param name="folder">The folder name.</param>
-        /// <returns>A list of video files.</returns>
+        /// <returns>The <see cref="IEnumerable"/>list of video files.</returns>
         private static IEnumerable<string> GetFileList(string folder)
         {
             var fileList = GetFiles(folder);
@@ -226,7 +226,7 @@ namespace PlayList
         /// <summary>
         /// Get list of files.
         /// </summary>
-        /// <param name="fileList">The image List.</param>
+        /// <param name="folder">The current folder.</param>
         private static IEnumerable<string> GetFiles(string folder)
         {
             var fileList = Directory.EnumerateFiles(folder, "*.*", SearchOption.AllDirectories)
@@ -263,7 +263,7 @@ namespace PlayList
         /// Get command line arguments.
         /// </summary>
         /// <param name="args">The arguments.</param>
-        /// <returns>The <see cref="bool"/>subfolder status.</returns>
+        /// <returns>The <see cref="ArgList"/>subfolder status.</returns>
         private static ArgList GetArguments(IList<string> args)
         {
             var subFolders = false;
@@ -293,7 +293,7 @@ namespace PlayList
         /// <summary>
         /// Replace certain characters with ascii codes.
         /// </summary>
-        /// <param name="string">item.Name.</param>
+        /// <param name="name">The item name.</param>
         /// <returns>The <see cref="string"/>corrected name.</returns>
         private static string ChangeToAscii(string name)
         {
