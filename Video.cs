@@ -23,22 +23,9 @@ namespace PlayList
         {
             var argList = GetArguments(args);
 
-            var fileDirectory = Environment.CurrentDirectory + @"\";
+            var directories = GetDirectoryList(argList);
 
-            IEnumerable<string> directories = new List<string>();
-
-            if (argList.SubFolder)
-            {
-                var dirs = Directory.GetDirectories(fileDirectory, "*", SearchOption.TopDirectoryOnly);
-
-                directories = GetDirectories(dirs);
-            }
-            else
-            {
-                // This isn't working - I need to add the current directory.
-                directories = new string[] { fileDirectory };
-            }
-
+            // TODO: Refactor
             foreach (var dir in directories)
             {
                 // we have to create a video list for each directory
@@ -50,6 +37,26 @@ namespace PlayList
                     CreatePlayList(files);
                 }
             }
+        }
+
+        private static IEnumerable<string> GetDirectoryList(ArgList args)
+        {
+            IEnumerable<string> directories = new List<string>();
+            var fileDirectory = Environment.CurrentDirectory + @"\";
+            
+            if (args.SubFolder)
+            {
+                var dirs = Directory.GetDirectories(fileDirectory, "*", SearchOption.TopDirectoryOnly);
+
+                directories = GetDirectories(dirs);
+            }
+            else
+            {
+                // This isn't working - I need to add the current directory.
+                directories = new string[] { fileDirectory };
+            }
+
+            return directories;
         }
 
         /// <summary>
@@ -154,25 +161,6 @@ namespace PlayList
         }
 
         /// <summary>
-        /// Replace certain characters with ascii codes.
-        /// </summary>
-        /// <param name="string">item.Name.</param>
-        /// <returns>The <see cref="string"/>corrected name.</returns>
-        private static string ChangeToAscii(string name)
-        {
-            if (name.Contains("#"))
-            {
-                name = name.Replace("#", "%23");
-            }
-            else if (name.Contains("&"))
-            {
-                name = name.Replace("&", "%26");
-            }
-
-            return name;
-        }
-
-        /// <summary>
         /// Build the playlist header.
         /// </summary>
         /// <param name="IEnumerable">The List of video files.</param>
@@ -274,6 +262,25 @@ namespace PlayList
 
                 return arglist;
             }
+        }
+
+        /// <summary>
+        /// Replace certain characters with ascii codes.
+        /// </summary>
+        /// <param name="string">item.Name.</param>
+        /// <returns>The <see cref="string"/>corrected name.</returns>
+        private static string ChangeToAscii(string name)
+        {
+            if (name.Contains("#"))
+            {
+                name = name.Replace("#", "%23");
+            }
+            else if (name.Contains("&"))
+            {
+                name = name.Replace("&", "%26");
+            }
+
+            return name;
         }
     }
 }
