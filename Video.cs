@@ -142,10 +142,10 @@ namespace PlayList
             {
                 playList.Append("\t\t<track>\n");
                 var name = ChangeToAscii(item.Name);
-                playList.Append("\t\t<location>" + "file:///" + name + "</location>\"\n");
-                playList.Append("\t\t<duration>" + item.Duration + "</duration>\"\n");
+                playList.Append("\t\t<location>" + "file:///" + name + "</location>\n");
+                playList.Append("\t\t<duration>" + item.Duration + "</duration>\n");
                 playList.Append("\t\t<extension application=\"http://www.videolan.org/vlc/playlist/0\">\n");
-                playList.Append("\t\t\t<vlc:id>" + item.ItemId + "</vlc:id>\"\n");
+                playList.Append("\t\t\t<vlc:id>" + item.ItemId + "</vlc:id>\n");
                 playList.Append("\t\t</extension>\n");
                 playList.Append("\t\t</track>\n");
             }
