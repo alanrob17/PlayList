@@ -25,7 +25,15 @@ namespace PlayList
 
             var directories = GetDirectoryList(argList);
 
-            // TODO: Refactor
+            GeneratePlayLists(directories);
+        }
+
+        /// <summary>
+        /// Generate a playlist for each directory.
+        /// </summary>
+        /// <param name="directories">The list of directories that require a playlist.</param>
+        private static void GeneratePlayLists(IEnumerable<string> directories)
+        {
             foreach (var dir in directories)
             {
                 // we have to create a video list for each directory
@@ -39,6 +47,11 @@ namespace PlayList
             }
         }
 
+        /// <summary>
+        /// Get list of directories that require playlists.
+        /// </summary>
+        /// <param name="ArgList">The list of command line arguments.</param>
+        /// <returns>The <see cref="IEnumerable"/>directory list.</returns>
         private static IEnumerable<string> GetDirectoryList(ArgList args)
         {
             IEnumerable<string> directories = new List<string>();
@@ -52,7 +65,6 @@ namespace PlayList
             }
             else
             {
-                // This isn't working - I need to add the current directory.
                 directories = new string[] { fileDirectory };
             }
 
@@ -223,13 +235,27 @@ namespace PlayList
             return fileList;
         }
 
+        /// <summary>
+        /// Get the video duration length in milliseconds.
+        /// </summary>
+        /// <param name="filePath">The path and name of the file.</param>
+        /// <returns>The <see cref="TimeSpan"/>time span length of the file.<returns>
         private static TimeSpan GetVideoDuration(string filePath)
         {
-            using (var shell = ShellObject.FromParsingName(filePath))
+            FileInfo file = new FileInfo(filePath);
+
+            if (file.Length > 0)
             {
-                Microsoft.WindowsAPICodePack.Shell.PropertySystem.IShellProperty prop = shell.Properties.System.Media.Duration;
-                var t = (ulong)prop.ValueAsObject;
-                return TimeSpan.FromTicks((long)t);
+                using (var shell = ShellObject.FromParsingName(filePath))
+                {
+                    Microsoft.WindowsAPICodePack.Shell.PropertySystem.IShellProperty prop = shell.Properties.System.Media.Duration;
+                    var t = (ulong)prop.ValueAsObject;
+                    return TimeSpan.FromTicks((long)t);
+                }
+            }
+            else
+            {
+                return TimeSpan.Zero;
             }
         }
 
