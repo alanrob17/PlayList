@@ -141,6 +141,10 @@ namespace PlayList
             foreach (var item in items)
             {
                 playList.Append("\t\t<track>\n");
+                if (item.Name.Contains("#"))
+                {
+                    item.Name = item.Name.Replace("#", "%23");
+                }
                 playList.Append("\t\t<location>" + "file:///" + item.Name + "</location>\"\n");
                 playList.Append("\t\t<duration>" + item.Duration + "</duration>\"\n");
                 playList.Append("\t\t<extension application=\"http://www.videolan.org/vlc/playlist/0\">\n");
