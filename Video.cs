@@ -125,7 +125,7 @@ namespace PlayList
             }
 
             playList.Append("\t</extension>\n");
-            playList.Append("</playlist>\n");
+            playList.Append("</playlist>");
 
             return playList;
         }
